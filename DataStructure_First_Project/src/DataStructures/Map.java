@@ -4,23 +4,21 @@ public class Map<T1 extends Comparable<T1>, T2>{
     private Node<Pair<T1, T2>> first = null;
     private int size = 0;
     public void put(T1 key, T2 value){
-        if (!containsKey(key)){
-            iterateOnMap(node -> {
-                if (node.getElement().getFirst().compareTo(key) < 0 &&
-                    node.getNext().getElement().getFirst().compareTo(key) > 0){
-                        
-                        Node<Pair <T1, T2>> newNode = new Node<Pair <T1, T2>>(new Pair<T1, T2>(key, value));
-                        
-                        newNode.setNext(node.getNext());
-                        node.setNext(newNode);
-                 }
-            });
-            size++;
+        if (first == null){
+            first = new Node<Pair <T1, T2>>(new Pair<T1, T2>(key, value));
+            ++size;
             return;
         }
+        if (!containsKey(key)){
+            Node <Pair <T1, T2>> newNode = new Node <Pair <T1, T2>>(new Pair<T1, T2>(key, value));
+            newNode.setNext(first);
+            first = newNode;
+            ++size;
+        }
+
         iterateOnMap(node -> {
             if (node.getElement().getFirst().equals(key))
-                node.getElement().setSecond(value);
+                 node.getElement().setSecond(value);
         });
     }
 
@@ -30,8 +28,8 @@ public class Map<T1 extends Comparable<T1>, T2>{
             pointer = pointer.getNext();
 
         
-            if (pointer == null)
-            throw new Exception("no such key in the map: " + this.hashCode());
+        if (pointer == null)
+            throw new Exception("no such key in the map: " + this);
         
         return pointer.getElement().getSecond();
     }
@@ -50,7 +48,15 @@ public class Map<T1 extends Comparable<T1>, T2>{
     public void removeKey(T1 key) {
         if (!containsKey(key))
             return;
-        
+        Node<Pair <T1, T2>> pointer = first;
+        while(pointer != null){
+            if (pointer.getNext() != null && pointer.getNext().getElement().getFirst().equals(key)) {
+                pointer.setNext(pointer.getNext().getNext());
+                size--;
+                return;
+            }
+            pointer = pointer.getNext();
+        }
     }
     public void iterateOnMap(Preformer<T1, T2> preformer) {
         Node<Pair<T1, T2>> pointer = first;
@@ -66,5 +72,21 @@ public class Map<T1 extends Comparable<T1>, T2>{
 
     public int getSize(){
         return size;
-    }    
+    }  
+    
+    @Override
+    public String toString() {
+        String res = "{";
+        Node<Pair<T1, T2>> pointer = first;
+        while(pointer != null){
+            res += pointer.getElement() + ", ";
+            pointer = pointer.getNext();
+        }
+        res += "}";
+        return res;
+
+    }
+    public Node<Pair <T1, T2>> getFirst() {
+        return first;
+    }
 }

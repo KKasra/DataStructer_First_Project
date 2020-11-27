@@ -1,6 +1,6 @@
 package NetworkComponents;
 
-import DataStructures.List;
+import DataStructures.*;
 import DataStructures.Map;
 
 public class NetworkSet {
@@ -10,18 +10,36 @@ public class NetworkSet {
     private Map<Integer, Person> indexToPerson;
     private List<Network> networks;
 
-    public void addPerson(Person person) {
-        if (people.containsKey(person))
-            return;
+    public Person addPerson(String name) {
+        Person person = new Person(name);
+        
+        Node <Pair <Person, Integer>>  pointer = people.getFirst();
+        while (pointer != null)  {
+            if (pointer.getElement().getFirst().getName().equals(name))
+                return pointer.getElement().getFirst();
+            pointer = pointer.getNext();
+        }
+        
+            
         indexToPerson.put(people.getSize(), person);
         people.put(person, people.getSize());
+        return person;
     }
 
-    public void addSubject(Subject subject) {
-        if (subjects.containsKey(subject))
-            return;
+    public Subject addSubject(String name) {
+        Subject subject = new Subject(name);
+        
+        Node <Pair <Subject, Integer>>  pointer = subjects.getFirst();
+        while (pointer != null)  {
+            if (pointer.getElement().getFirst().getName().equals(name))
+                return pointer.getElement().getFirst();
+            pointer = pointer.getNext();
+        }
+        
+            
         indexToSubject.put(subjects.getSize(), subject);
         subjects.put(subject, subjects.getSize());
+        return subject;
     }
     public Person getPersonWithIndex(int index) {
         try {

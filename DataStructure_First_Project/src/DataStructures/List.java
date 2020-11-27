@@ -9,7 +9,7 @@ public class List<T> {
             return;
         }
         Node<T> pointer = first;
-        while(pointer.getNext() == null)
+        while(pointer.getNext() != null)
             pointer = pointer.getNext();
 
         pointer.setNext(new Node<T>(element));
@@ -27,19 +27,13 @@ public class List<T> {
     }
 
     public void removeFirst(T element){
-        Node<T> before = null;
         Node<T> pointer = first;
         while (pointer != null) {
-            if (pointer.getElement().equals(element)){
-                if (pointer.equals(first))
-                    first = pointer.getNext();
-                
-                before.setNext(pointer.getNext());
+            if (pointer.getNext() != null && pointer.getNext().getElement().equals(element)) {
+                pointer.setNext(pointer.getNext().getNext());
                 size--;
                 return;
             }
-            before = pointer;
-            pointer = pointer.getNext();
         }
     }
 

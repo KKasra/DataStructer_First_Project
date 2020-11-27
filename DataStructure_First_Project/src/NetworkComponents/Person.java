@@ -6,7 +6,7 @@ public class Person implements Comparable<Person> {
     private String name;
     private Set <Interest> interests;
     private Set<Friendship> friendships;
-    public Person(String name) {
+    Person(String name) {
         this.name = name;
         interests = new Set<Interest>();
         friendships = new Set<Friendship>();
@@ -34,4 +34,10 @@ public class Person implements Comparable<Person> {
     public int compareTo(Person person) {
         return this.name.compareTo(person.getName());
     }
+
+    @Override
+    public String toString() {
+        return "Person [name=" + name + "]";
+    }
+    
 }

@@ -6,7 +6,7 @@ public class Subject implements Comparable<Subject>{
         return name;
     }
 
-    public Subject(String name) {
+    Subject(String name) {
         this.name = name;
     }
 
@@ -14,6 +14,11 @@ public class Subject implements Comparable<Subject>{
     public int compareTo(Subject subject) {
         return name.compareTo(subject.name);
     }
-    
+
+    @Override
+    public String toString() {
+        return "Subject [name=" + name + "]";
+    }
+
     
 }

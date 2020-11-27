@@ -1,11 +1,11 @@
 package DataStructures;
 
 public class Set<T extends Comparable<T>> extends List<T>{
-    
     @Override
     public void add(T element){
         if (first == null) {
             first = new Node<T>(element);
+            ++size;
             return;
         }
         Node<T> pointer = first;
@@ -14,6 +14,7 @@ public class Set<T extends Comparable<T>> extends List<T>{
 
         if (pointer.getNext() == null) {
             pointer.setNext(new Node<T>(element));
+            ++size;
             return;
         }
 
@@ -23,6 +24,7 @@ public class Set<T extends Comparable<T>> extends List<T>{
         Node<T> node = new Node<T>(element);
         node.setNext(pointer.getNext());
         pointer.setNext(node);
+        ++size;
     }
     
 }

@@ -20,12 +20,14 @@ public class Network {
         if (peopleIndex.containsKey(person))
             return;
         peopleIndex.put(person, peopleIndex.getSize());
+        indexToPerson.put(indexToPerson.getSize(), person);
     }
 
     public void addSubject(Subject subject) {
         if (subjectsIndex.containsKey(subject))
             return;
         subjectsIndex.put(subject, subjectsIndex.getSize());
+        indextToSubject.put(indextToSubject.getSize(), subject);
     }
 
     public Subject getSubjectWithIndex(int index) {
@@ -45,4 +47,17 @@ public class Network {
             return null;
         }
     }
+
+    public Map<Integer, Person> getIndexToPerson() {
+        return indexToPerson;
+    }
+
+
+    public Map<Integer, Subject> getIndextToSubject() {
+        return indextToSubject;
+    }
+
+ 
+
+    
 }

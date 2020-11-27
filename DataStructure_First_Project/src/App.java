@@ -21,18 +21,15 @@ public class App {
         checkData();
     }
 
-    private static void getNetworkData(Network network, Scanner scanner){
+    private static void getNetworkData(Network network, Scanner scanner) throws InterruptedException {
             int numberOfSubjects = scanner.nextInt();
             for (int j = 0; j < numberOfSubjects; j++) {
-                Subject  subject = new Subject(scanner.next());
-                NetworkSet.getInstance().addSubject(subject);
+                Subject subject = NetworkSet.getInstance().addSubject(scanner.next());
                 network.addSubject(subject);
             }
-
             int numberOfPeople = scanner.nextInt();
             for (int j = 0; j < numberOfPeople; j++) {
-                Person person = new Person(scanner.next());
-                NetworkSet.getInstance().addPerson(person);
+                Person person = NetworkSet.getInstance().addPerson(scanner.next());
                 network.addPerson(person);
                 
                 int numberOfInterests = scanner.nextInt();
@@ -62,17 +59,17 @@ public class App {
     private static void checkData(){
         NetworkSet.getInstance().getPeople().iterateOnMap(node -> {
             Person person  = node.getElement().getFirst();
-            System.err.println(person.getName() + ":");
+            System.out.println(person.getName() + ":");
             person.getFriendships().iterateOnList(node1 -> {
                 Friendship friendship = node1.getElement();
-                System.err.print(friendship.getPerson().getName() + "(" + friendship.getDegree() + ") ");
+                System.out.print(friendship.getPerson().getName() + "(" + friendship.getDegree() + ") ");
             });
-            System.err.println();
+            System.out.println();
             person.getInterests().iterateOnList(node1 -> {
                 Interest interest = node1.getElement();
-                System.err.print(interest.getSubject().getName() + "(" + interest.getDegree() + ") "); 
+                System.out.print(interest.getSubject().getName() + "(" + interest.getDegree() + ") "); 
             });
-            System.err.println("\n//");
+            System.out.println("\n//");
 
         });     
     }
