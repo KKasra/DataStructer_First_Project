@@ -3,7 +3,7 @@ package Connections;
 import NetworkComponents.Network;
 import NetworkComponents.Person;
 
-public class Friendship{
+public class Friendship implements Comparable<Friendship>{
     private Person person;
     private double degree;
     private Network network;
@@ -23,5 +23,13 @@ public class Friendship{
         this.person = person;
         this.degree = degree;
         this.network = network;
+    }
+
+    @Override
+    public int compareTo(Friendship friendship) {
+        int i = person.getName().compareTo(friendship.getPerson().getName());
+        if (i == 0)
+            return Double.compare(degree, friendship.getDegree());
+        return i;
     }
 }

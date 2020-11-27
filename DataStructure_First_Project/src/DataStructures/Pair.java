@@ -1,6 +1,6 @@
 package DataStructures;
 
-public class Pair <T1, T2>{
+public class Pair <T1, T2> {
     private T1 first;
     private T2 second;
     public Pair(T1 first, T2 second){
@@ -22,7 +22,5 @@ public class Pair <T1, T2>{
     public void setSecond(T2 second) {
         this.second = second;
     }
-
-    
 
 }
