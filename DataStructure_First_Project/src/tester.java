@@ -1,19 +1,32 @@
 import java.util.Scanner;
 
 import DataStructures.Map;
+import LinearAlgebra.Matrix;
 
 public class tester {
-    public static void main(String[] args) {
-        Map<Integer, Integer> map = new Map<Integer, Integer>();
+    public static void main(String[] args) throws Exception {
+        Matrix a = new Matrix();
+        Matrix b = new Matrix();
         Scanner scanner = new Scanner(System.in);
-        int n = 10;
-        while(n-- > 0) {
-            map.put(scanner.nextInt(), scanner.nextInt());
-            map.iterateOnMap(node -> {
-                System.out.println(">" + node.getElement().getFirst() + " " + node.getElement().getSecond());
-            });
+
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        while (n-- > 0) {
+            int i = scanner.nextInt();
+            int j = scanner.nextInt();
+            double value = scanner.nextDouble();
+            a.setValue(i, j, value);
+
         }
-        scanner.close();
+
+        while (m-- > 0) {
+            int i = scanner.nextInt();
+            int j = scanner.nextInt();
+            double value = scanner.nextDouble();
+            b.setValue(i, j, value);
+        }
+
+        System.out.println(b.product(a));
     }
     
 }

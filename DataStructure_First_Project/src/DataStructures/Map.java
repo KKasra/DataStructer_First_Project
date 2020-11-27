@@ -11,8 +11,14 @@ public class Map<T1 extends Comparable<T1>, T2>{
         }
         if (!containsKey(key)){
             Node <Pair <T1, T2>> newNode = new Node <Pair <T1, T2>>(new Pair<T1, T2>(key, value));
-            newNode.setNext(first);
-            first = newNode;
+            
+            Node<Pair<T1, T2>> pointer = first;
+            while (pointer.getNext() != null && pointer.getNext().getElement().getFirst().compareTo(key) <= 0)
+                pointer = pointer.getNext();
+
+            newNode.setNext(pointer.getNext());
+            pointer.setNext(newNode);
+            
             ++size;
         }
 
