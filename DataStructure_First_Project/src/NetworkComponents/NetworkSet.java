@@ -71,6 +71,12 @@ public class NetworkSet {
         return subjects;
     }
 
+    public int getIndexOfPerson(Person person) throws Exception {
+        return people.get(person);
+    }
+    public int getIndexOfSubject(Subject subject) throws Exception {
+        return subjects.get(subject);
+    }
 
      private NetworkSet() {
         people = new Map<Person, Integer>();

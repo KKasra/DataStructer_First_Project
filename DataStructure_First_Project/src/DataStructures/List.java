@@ -6,6 +6,7 @@ public class List<T> {
     public void add(T element){
         if (first == null) {
             first = new Node<T>(element);
+            ++size;
             return;
         }
         Node<T> pointer = first;
@@ -51,5 +52,20 @@ public class List<T> {
     public int getSize(){
         return size;
     }
+    public Node<T> getFirst() {
+        return first;
+    }
 
+    @Override
+    public String toString() {
+        String res = "{";
+        Node<T> pointer = first;
+        while (pointer != null) {
+            res += pointer.getElement() + ", ";
+            pointer = pointer.getNext();
+        }
+        return res + "}";
+    }
+
+    
 }

@@ -10,6 +10,7 @@ public class Interest implements Comparable<Interest> {
     public Interest(Subject subject, double degree, Network network){
         this.subject = subject;
         this.degree = degree;
+        this.network = network;
     }
 
     public Subject getSubject() {
