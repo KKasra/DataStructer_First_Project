@@ -2,12 +2,14 @@ package NetworkComponents;
 
 public class Subject implements Comparable<Subject>{
     private String name;
+    private int idInNetworkSet;
     public String getName(){
         return name;
     }
 
-    Subject(String name) {
+    Subject(String name, int idInNetworkSet) {
         this.name = name;
+        this.idInNetworkSet = idInNetworkSet;
     }
 
     @Override
@@ -20,5 +22,8 @@ public class Subject implements Comparable<Subject>{
         return "Subject [name=" + name + "]";
     }
 
+    public int getIdInNetworkSet(){
+        return idInNetworkSet;
+    }
     
 }

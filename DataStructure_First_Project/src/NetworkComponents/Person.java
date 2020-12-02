@@ -6,8 +6,10 @@ public class Person implements Comparable<Person> {
     private String name;
     private Set <Interest> interests;
     private Set<Friendship> friendships;
-    Person(String name) {
+    private int idInNetworkSet;
+    Person(String name, int idInNetworkSet) {
         this.name = name;
+        this.idInNetworkSet = idInNetworkSet;
         interests = new Set<Interest>();
         friendships = new Set<Friendship>();
     }
@@ -39,5 +41,9 @@ public class Person implements Comparable<Person> {
     public String toString() {
         return "Person [name=" + name + "]";
     }
+
+	public Integer getIdInNetworkSet() {
+		return idInNetworkSet;
+	}
     
 }

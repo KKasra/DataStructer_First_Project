@@ -20,7 +20,7 @@ public class App {
         }
         
 
-        //  checkData();
+         checkData();
 
         SearchEngine.getInstance().getInfoOFNetworkSet(NetworkSet.getInstance());
 
@@ -84,7 +84,7 @@ public class App {
 
     private static void checkData(){
         NetworkSet.getInstance().getPeople().iterateOnMap(node -> {
-            Person person  = node.getElement().getFirst();
+            Person person  = node.getElement().getSecond();
             System.err.println(person.getName() + ":");
             person.getFriendships().iterateOnList(node1 -> {
                 Friendship friendship = node1.getElement();

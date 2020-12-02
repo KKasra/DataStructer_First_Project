@@ -20,7 +20,7 @@ public class SearchEngine {
         List<Integer> indexOfSubjects = new List<Integer>();
         query.subjects.iterateOnList(node -> {
             try {
-                indexOfSubjects.add(networkSet.getIndexOfSubject(node.getElement()));
+                indexOfSubjects.add(node.getElement().getIdInNetworkSet());
             } catch (Exception ignore) {
             }
         });
@@ -98,7 +98,7 @@ public class SearchEngine {
             query.subjects.iterateOnList(node1 -> {
                 try {
                     addedWeight.setValue(i, 0, addedWeight.getValueOf(i, 0)
-                            + peopleToSubjects.getValueOf(i, networkSet.getIndexOfSubject(node1.getElement())));
+                            + peopleToSubjects.getValueOf(i, node1.getElement().getIdInNetworkSet()));
                 } catch (Exception e) {}
             });
         });
@@ -160,18 +160,33 @@ public class SearchEngine {
 
     private void initPeopleToPeopleMatrix(NetworkSet networkSet) throws Exception {
         peopleToPeople = new Matrix();
-
-        for (int i = 0; i < networkSet.getPeople().getSize(); i++) {
-            Person person = networkSet.getPersonWithIndex(i);
+        Map<Integer, Map<Integer, Double>> map = new Map<Integer, Map<Integer, Double>>();
+        map.put(0, new Map<Integer, Double>());
+        Node<Pair<Integer, Map<Integer, Double>>> column = map.getFirst();
+        Node<Pair<Integer, Person>> node = networkSet.getPeople().getFirst();
+        while(node != null) {
+            Person person = node.getElement().getSecond();
+            int i = person.getIdInNetworkSet();
             Node <Friendship> friendshipNode = person.getFriendships().getFirst();
             while(friendshipNode != null) {
-                int j = networkSet.getIndexOfPerson(friendshipNode.getElement().getPerson());
-                peopleToPeople.setValue(i, j, peopleToPeople.getValueOf(i, j) + friendshipNode.getElement().getDegree());
+                int j = friendshipNode.getElement().getPerson().getIdInNetworkSet();
+
+                // peopleToPeople.setValue(i, j, peopleToPeople.getValueOf(i, j) + friendshipNode.getElement().getDegree());
+                try{
+                    column.getElement().getSecond().put(j, column.getElement().getSecond().get(j) + friendshipNode.getElement().getDegree());
+                }catch(Exception e) {
+                    column.getElement().getSecond().put(j, friendshipNode.getElement().getDegree());
+                }
                 friendshipNode = friendshipNode.getNext();
             }
+           column.getElement().getSecond().put(i, 1D);
+            column.setNext(new Node<Pair<Integer,Map<Integer, Double>>>(new Pair<Integer, Map<Integer, Double>>(i + 1, new Map<Integer, Double>())));
+            column = column.getNext();
+            // peopleToPeople.setValue(i, i, 1);
+            node = node.getNext();
+        }
 
-            peopleToPeople.setValue(i, i, 1);
-        } 
+        peopleToPeople = new Matrix(map);
     }
 
     private void initPeopleToSubjectsmatrix(NetworkSet networkSet) throws Exception {
@@ -181,7 +196,7 @@ public class SearchEngine {
             Person person = networkSet.getPersonWithIndex(i);
             Node <Interest> interestNode = person.getInterests().getFirst();
             while(interestNode != null) {
-                int j = networkSet.getIndexOfSubject(interestNode.getElement().getSubject());
+                int j = interestNode.getElement().getSubject().getIdInNetworkSet();
                 peopleToSubjects.setValue(i, j, peopleToSubjects.getValueOf(i, j) + interestNode.getElement().getDegree());
                 interestNode = interestNode.getNext();
             }

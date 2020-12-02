@@ -1,5 +1,6 @@
 package LinearAlgebra;
 
+import DataStructures.List;
 import DataStructures.Map;
 import DataStructures.Node;
 import DataStructures.Pair;
@@ -10,7 +11,9 @@ public class Matrix {
     public Matrix() {
         columns = new Map<Integer, Map<Integer, Double>>();
     }
-
+    public Matrix(Map<Integer, Map<Integer, Double>> columns){
+        this.columns = columns;
+    }
     public Matrix getTranspose() throws Exception {
         Matrix res = new Matrix();
 
@@ -41,49 +44,25 @@ public class Matrix {
     }
 
     public Matrix product(Matrix B) {
-       Matrix res = new Matrix();
+        Matrix res = new Matrix();
 
-       this.iterateOnMatrix((a_i,a_j,Aij) -> {
-           B.iterateOnMatrix((b_i, b_j, Bij) ->{
-               if (a_j == b_i)
-                    res.setValue(a_i, b_j, Aij * Bij + res.getValueOf(a_i, b_j));
-           });
-       });
-    //    Node<Pair<Integer, Map<Integer, Double>>> ACP = columns.getFirst();
-    //    while(ACP != null) {
-
-    //         int a_i = ACP.getElement().getFirst();
-    //         Node<Pair<Integer, Double>> ARP = ACP.getElement().getSecond().getFirst();
-    //         while (ARP != null) {
-    //             int a_j = ARP.getElement().getFirst();
-                
-                
-
-    //             ARP = ARP.getNext();
-    //         }
-
-    //        ACP = ACP.getNext();
-    //    }
-
-       return res;
+        // this.iterateOnMatrix((a_i, a_j, Aij) -> {
+        // B.iterateOnMatrix((b_i, b_j, Bij) -> {
+        // if (a_j == b_i)
+        // res.setValue(a_i, b_j, Aij * Bij + res.getValueOf(a_i, b_j));
+        // });
+        // });
+        res = optimizedProduct(B);
+        return res;
     }
 
     public void iterateOnMatrix(Preformer preformer) {
-        Node<Pair<Integer, Map<Integer, Double>>> ACP = columns.getFirst();
-        while (ACP != null) {
-
-            int i = ACP.getElement().getFirst();
-            Node<Pair<Integer, Double>> ARP = ACP.getElement().getSecond().getFirst();
-            while (ARP != null) {
-                int j = ARP.getElement().getFirst();
-
-                preformer.preform(i, j, ARP.getElement().getSecond());
-
-                ARP = ARP.getNext();
-            }
-
-            ACP = ACP.getNext();
-        }
+        columns.iterateOnMap(node -> {
+            node.getElement().getSecond().iterateOnMap(node1 -> {
+                preformer.preform(node.getElement().getFirst(), node1.getElement().getFirst(),
+                        node1.getElement().getSecond());
+            });
+        });
 
     }
 
@@ -92,55 +71,47 @@ public class Matrix {
     }
 
     public Matrix optimizedProduct(Matrix B) {
-        try {
-            B = B.getTranspose();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         Matrix res = new Matrix();
+        Node<Pair<Integer, Map<Integer, Double>>> ACP = this.columns.getFirst();
+        if (ACP == null)
+            return res;
+        Node<Pair<Integer, Map<Integer, Double>>> RCP = new Node<Pair<Integer, Map<Integer, Double>>>(
+                new Pair<Integer, Map<Integer, Double>>(ACP.getElement().getFirst(), new Map<Integer, Double>()));
 
-        Node<Pair<Integer, Map<Integer, Double>>> pointerOnColumnsOfA = columns.getFirst();
-        while (pointerOnColumnsOfA != null) {
-            int i = pointerOnColumnsOfA.getElement().getFirst();
-            res.columns.put(i, new Map<Integer, Double>());
+        while (ACP != null) {
+            Node<Pair<Integer, Double>> AIJ = ACP.getElement().getSecond().getFirst();
+            Node<Pair<Integer, Map<Integer, Double>>> BCP = B.columns.getFirst();
+            while (AIJ != null && BCP != null) {
+                // getting two pointers on same place
+                while (AIJ != null && AIJ.getElement().getFirst().compareTo(BCP.getElement().getFirst()) < 0)
+                    AIJ = AIJ.getNext();
+                if (AIJ == null)
+                    break;
+                while (BCP != null && BCP.getElement().getFirst().compareTo(AIJ.getElement().getFirst()) < 0)
+                    BCP = BCP.getNext();
+                if (BCP == null)
+                    break;
+                // ---------------
 
-            Node<Pair<Integer, Map<Integer, Double>>> pointerOnColumnsOfB = B.columns.getFirst();
-            while (pointerOnColumnsOfB != null) {
-                int j = pointerOnColumnsOfB.getElement().getFirst();
-                double sum = 0;
-
-                Node<Pair<Integer, Double>> pointerOnRowsOfA = pointerOnColumnsOfA.getElement().getSecond().getFirst();
-                Node<Pair<Integer, Double>> pointerOnRowsOfB = pointerOnColumnsOfB.getElement().getSecond().getFirst();
-
-                while (pointerOnRowsOfA != null && pointerOnRowsOfB != null) {
-                    while (pointerOnRowsOfA != null
-                            && pointerOnRowsOfA.getElement().getFirst() < pointerOnRowsOfB.getElement().getFirst())
-                        pointerOnRowsOfA = pointerOnRowsOfA.getNext();
-
-                    if (pointerOnRowsOfA == null)
-                        break;
-
-                    while (pointerOnRowsOfB != null
-                            && pointerOnRowsOfB.getElement().getFirst() < pointerOnRowsOfA.getElement().getFirst())
-                        pointerOnRowsOfB = pointerOnRowsOfB.getNext();
-
-                    if (pointerOnRowsOfB == null)
-                        break;
-
-                    sum += pointerOnRowsOfA.getElement().getSecond() * pointerOnRowsOfB.getElement().getSecond();
-
-                    pointerOnRowsOfA = pointerOnRowsOfA.getNext();
-                    pointerOnRowsOfB = pointerOnRowsOfB.getNext();
+                Node<Pair<Integer, Double>> BIJ = BCP.getElement().getSecond().getFirst();
+                while (BIJ != null) {
+                    int i = ACP.getElement().getFirst();
+                    int j = BIJ.getElement().getFirst();
+                    res.setValue(i, j,
+                            res.getValueOf(i, j) + AIJ.getElement().getSecond() * BIJ.getElement().getSecond());
+                    BIJ = BIJ.getNext();
                 }
-                if (sum > 0)
-                    try {
-                        res.columns.get(i).put(j, sum);
-                    } catch (Exception e) {
-                    }
-                pointerOnColumnsOfB = pointerOnColumnsOfB.getNext();
+
+                // moving further
+                AIJ = AIJ.getNext();
+                BCP = BCP.getNext();
             }
-            pointerOnColumnsOfA = pointerOnColumnsOfA.getNext();
+
+            ACP = ACP.getNext();
+            if (ACP != null)
+                RCP.setNext(new Node<Pair<Integer, Map<Integer, Double>>>(new Pair<Integer, Map<Integer, Double>>(
+                        ACP.getElement().getFirst(), new Map<Integer, Double>())));
+            RCP = RCP.getNext();
         }
         return res;
     }
@@ -167,6 +138,7 @@ public class Matrix {
         }
     }
 
+    
     @Override
     public String toString() {
         return "Matrix [columns=" + columns + "]";
